@@ -1,0 +1,17 @@
+name: mysql-test
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_ROOT_HOST: '%'
+          MYSQL_DATABASE: testing
+        options: --health-cmd="mysqladmin ping --silent" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - name: DNS resolution
+        run: getent hosts mysql || (echo "DNS lookup failed for 'mysql'!" && exit 1)
